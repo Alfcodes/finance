@@ -1,0 +1,40 @@
+name: personal-finance
+services:
+- name: web
+  github:
+    repo: Alfcodes/finance
+    branch: main
+  build_command: composer install && npm install && npm run build
+  run_command: php artisan migrate --force && php-fpm
+  http_port: 8000
+  envs:
+  - key: APP_NAME
+    value: "PersonalFinance"
+  - key: APP_ENV
+    value: production
+  - key: APP_DEBUG
+    value: "false"
+  - key: LOG_CHANNEL
+    value: stderr
+  - key: DB_HOST
+    value: ${db.hostname}
+  - key: DB_PORT
+    value: "5432"
+  - key: DB_DATABASE
+    value: ${db.name}
+  - key: DB_USERNAME
+    value: ${db.username}
+  - key: DB_PASSWORD
+    value: ${db.password}
+  - key: CACHE_DRIVER
+    value: redis
+  - key: SESSION_DRIVER
+    value: cookie
+  http_routes:
+  - path: /
+    component_name: web
+databases:
+- name: db
+  engine: PG
+  version: "12"
+  production: true
